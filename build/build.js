@@ -10,6 +10,6 @@ rollup({
     bundle.write({
         dest: 'dest/scrollbar.js',
         moduleName: 'ScrollBar',
-        format: 'iife'
+        format: 'cjs'
     });
 }).catch(console.error);
