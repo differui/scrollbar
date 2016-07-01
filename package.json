@@ -2,7 +2,7 @@
   "name": "scrollbar",
   "version": "0.0.3",
   "description": "A scrollbar position calculator.",
-  "main": "dest/scrollbar.js",
+  "main": "dest/scrollbar-cjs.js",
   "scripts": {
     "prepublish": "npm run build",
     "build": "node build/build.js"
