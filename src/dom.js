@@ -2,35 +2,28 @@ import { bindAll } from './util';
 
 export default {
     setNode(node = document.querySelector('body')) {
-        this.n1 = node.querySelector(this.wrapper);
-        this.n2 = node.querySelector(this.scroller);
-        this.n3 = node.querySelector(this.bar);
+        this.n1 = node.querySelector(this.__wrapper);
+        this.n2 = node.querySelector(this.__scroller);
+        this.n3 = node.querySelector(this.__bar);
 
-        const bounding = this.n1.getBoundingClientRect();
-
-        this.setDimension(
-            bounding.top,
-            bounding.left,
-            this.n1.clientWidth,
-            this.n1.clientHeight,
-            this.n2.clientWidth,
-            this.n2.clientHeight,
-            this.n3.clientWidth,
-            this.n3.clientHeight
-        );
-        this.doNotify();
-
+        this._bindAll();
         this._installListener();
+        this._onResize();
     },
 
-    _installListener() {
+    _bindAll() {
         bindAll(this,
+            'doLoop',
+            '_onResize',
             '_onMouseUp',
             '_onMouseDown',
             '_onMouseMove',
             '_onMouseWheel'
         );
+    },
 
+    _installListener() {
+        window.addEventListener('resize', this._onResize);
         window.addEventListener('mouseup', this._onMouseUp);
         window.addEventListener('mousemove', this._onMouseMove);
         this.n1.addEventListener('mousedown', this._onMouseDown);
@@ -39,6 +32,7 @@ export default {
     },
 
     _uninstallListener() {
+        window.removeEventListener('resize', this._onResize);
         window.removeEventListener('mouseup', this._onMouseUp);
         window.removeEventListener('mousemove', this._onMouseMove);
         this.n1.removeEventListener('mousedown', this._onMouseDown);
@@ -52,6 +46,22 @@ export default {
 
     _antiBoundingY(y) {
         return y - this.y;
+    },
+
+    _onResize(ev) {
+        const bounding = this.n1.getBoundingClientRect();
+
+        this.setDimension(
+            bounding.top,
+            bounding.left,
+            this.n1.clientWidth,
+            this.n1.clientHeight,
+            this.n2.clientWidth,
+            this.n2.clientHeight,
+            this.n3.clientWidth,
+            this.n3.clientHeight
+        );
+        this.doLoop();
     },
 
     _onMouseUp(ev) {
@@ -81,8 +91,10 @@ export default {
     _onMouseWheel(ev) {
         ev.preventDefault();
 
+        const delta = ev.detail ? ev.detail * -1 : ev.wheelDelta / 40;
+
         this.doMouseWheel(
-            ev.detail ? ev.detail * -120: ev.wheelDelta,
+            delta / Math.abs(delta),
             this._antiBoundingX(ev.clientX),
             this._antiBoundingY(ev.clientY),
             ev.timeStamp

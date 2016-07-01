@@ -7,10 +7,22 @@ export function bindAll(context) {
     }
 };
 
-export const requestAnimationFrame =
-    window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function (callback) {
-        return setTimeout(callback, 1000 / 60);
-    };
+export const raf = (() => {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        ((callback) => {
+            return window.setTimeout(callback, 1000 / 60);
+        });
+})();
+
+export const caf = (() => {
+    return window.cancelAnimationFrame ||
+        window.webkitCancelRequestAnimationFrame ||
+        window.mozCancelRequestAnimationFrame ||
+        window.oCancelRequestAnimationFrame ||
+        window.msCancelRequestAnimationFrame ||
+        clearTimeout
+})();

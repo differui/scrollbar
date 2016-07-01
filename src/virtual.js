@@ -1,6 +1,4 @@
 export default {
-
-    // set virtual dimension
     setDimension(x, y, w1, h1, w2, h2, w3, h3) {
         this.x = x;
         this.y = y;
@@ -8,8 +6,9 @@ export default {
         this.h1 = h1;
         this.w2 = w2;
         this.h2 = h2;
-        this.w3 = this.__enableHorizontal ? w1 * w1 / w2 : w3;
-        this.h3 = this.__enableVertical ? h1 * h1 / h2 : h3;
+        this.w3 = w3;
+        this.h3 = h1 * h1 / h2;
+        this.l3 = w1 - w3;
     },
 
     _withinBar(x, y) {

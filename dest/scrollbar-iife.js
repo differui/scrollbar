@@ -1,31 +1,39 @@
 var ScrollBar = (function () {
   'use strict';
 
+  function bindAll(context) {
+      for (var i = 1; i < arguments.length; i += 1) {
+          var name = arguments[i];
+          var method = context[name];
+
+          context[name] = method.bind(context);
+      }
+  };
+
+  var raf = function () {
+      return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+          return window.setTimeout(callback, 1000 / 60);
+      };
+  }();
+
+  var caf = function () {
+      return window.cancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout;
+  }();
+
   var eventAPI = {
       doRefine: function doRefine() {
-          var w1 = this.w1;
-          var w2 = this.w2;
-          var w3 = this.w3;
           var h1 = this.h1;
           var h2 = this.h2;
           var h3 = this.h3;
-          var l2 = this.l2;
-          var l3 = this.l3;
           var t2 = this.t2;
           var t3 = this.t3;
 
 
-          l2 = Math.max(l2, w1 - w2);
-          l2 = Math.min(0, l2);
-          l3 = Math.max(0, l3);
-          l3 = Math.min(w1 - w3, l3);
           t2 = Math.max(t2, h1 - h2);
           t2 = Math.min(0, t2);
-          t3 = Math.max(0, t3);
+          t3 = Math.max(t3, 0);
           t3 = Math.min(h1 - h3, t3);
 
-          this.l2 = l2;
-          this.l3 = l3;
           this.t2 = t2;
           this.t3 = t3;
       },
@@ -46,52 +54,42 @@ var ScrollBar = (function () {
 
           this.__callback(w1, h1, l1, t1, w2, h2, l2, t2, w3, h3, l3, t3);
       },
-      doScrollTo: function doScrollTo(x, y) {
-          var w1 = this.w1;
-          var w2 = this.w2;
-          var h1 = this.h1;
-          var h2 = this.h2;
-          var l2 = this.l2;
-          var l3 = this.l3;
-          var t2 = this.t2;
-          var t3 = this.t3;
+      doMove: function doMove() {
+          this.v2 *= this.__friction;
+          this.v3 = this.v2 * this.h1 / this.h2 * -1;
 
+          if (Math.abs(this.v2) < 1 && Math.abs(this.v3) < 1) {
+              return;
+          }
 
-          l2 = x * -1;
-          t2 = y * -1;
-
-          l3 = l2 * w1 / w2 * -1;
-          t3 = t2 * h1 / h2 * -1;
-
-          this.l2 = l2;
-          this.l3 = l3;
-          this.t2 = t2;
-          this.t3 = t3;
+          this.t2 += this.v2;
+          this.t3 += this.v3;
 
           this.doRefine();
           this.doNotify();
       },
+      doLoop: function doLoop() {
+          this.doMove();
+          caf(this._handler);
+          this._handler = raf(this.doLoop);
+      },
+      doScrollTo: function doScrollTo(x, y) {
+          var deltaT = y * -1 - this.t2;
+          var direction = deltaT / Math.abs(deltaT);
+
+          this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
+      },
       doScrollBy: function doScrollBy() {
           var x = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
           var y = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-          var l2 = this.l2;
-          var l3 = this.l3;
-          var t2 = this.t2;
-          var t3 = this.t3;
 
-
-          x += l2 * -1;
-          y += t2 * -1;
-
-          this.doScrollTo(x, y);
+          this.doScrollTo(x, y + this.t2 * -1);
       },
       doMouseDown: function doMouseDown(x, y, timeStamp) {
           var withinBar = this._withinBar(x, y);
 
           if (withinBar) {
               this.__drag = true;
-              this._t1 = this.t1;
-              this._t2 = this.t2;
               this._t3 = this.t3;
               this.mx = x;
               this.my = y;
@@ -106,18 +104,14 @@ var ScrollBar = (function () {
 
           var h1 = this.h1;
           var h2 = this.h2;
-          var h3 = this.h3;
-          var t3 = this.t3;
           var _t3 = this._t3;
 
 
           var xDelta = x - this.mx;
           var yDelta = y - this.my;
 
-          t3 = _t3 + yDelta;
-
-          this.t2 = t3 * h2 / h1 * -1;
-          this.t3 = t3;
+          this.t3 = yDelta + _t3;
+          this.t2 = this.t3 * h2 / h1 * -1;
 
           this.doRefine();
           this.doNotify();
@@ -125,28 +119,12 @@ var ScrollBar = (function () {
       doMouseUp: function doMouseUp(timeStamp) {
           this.__drag = false;
       },
-      doMouseWheel: function doMouseWheel(delta, timeStamp) {
-          var t2 = this.t2;
-          var h1 = this.h1;
+      doMouseWheel: function doMouseWheel(delta, x, y, timeStamp) {
           var h2 = this.h2;
+          var h3 = this.h3;
 
 
-          t2 += delta * 30;
-
-          this.t2 = t2;
-          this.t3 = t2 * h1 / h2 * -1;
-
-          this.doRefine();
-          this.doNotify();
-      }
-  };
-
-  function bindAll(context) {
-      for (var i = 1; i < arguments.length; i += 1) {
-          var name = arguments[i];
-          var method = context[name];
-
-          context[name] = method.bind(context);
+          this.v2 += delta * this.__step;
       }
   };
 
@@ -163,7 +141,7 @@ var ScrollBar = (function () {
           this._onResize();
       },
       _bindAll: function _bindAll() {
-          bindAll(this, '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');
+          bindAll(this, 'doLoop', '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');
       },
       _installListener: function _installListener() {
           window.addEventListener('resize', this._onResize);
@@ -191,7 +169,7 @@ var ScrollBar = (function () {
           var bounding = this.n1.getBoundingClientRect();
 
           this.setDimension(bounding.top, bounding.left, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
-          this.doNotify();
+          this.doLoop();
       },
       _onMouseUp: function _onMouseUp(ev) {
           this.doMouseUp(ev.timeStamp);
@@ -209,7 +187,9 @@ var ScrollBar = (function () {
       _onMouseWheel: function _onMouseWheel(ev) {
           ev.preventDefault();
 
-          this.doMouseWheel(ev.detail ? ev.detail * -1 : ev.wheelDelta / 120, this._antiBoundingX(ev.clientX), this._antiBoundingY(ev.clientY), ev.timeStamp);
+          var delta = ev.detail ? ev.detail * -1 : ev.wheelDelta / 40;
+
+          this.doMouseWheel(delta / Math.abs(delta), this._antiBoundingX(ev.clientX), this._antiBoundingY(ev.clientY), ev.timeStamp);
       }
   };
 
@@ -221,10 +201,9 @@ var ScrollBar = (function () {
           this.h1 = h1;
           this.w2 = w2;
           this.h2 = h2;
-          this.w3 = this.__enableHorizontal ? w1 * w1 / w2 : w3;
-          this.h3 = this.__enableVertical ? h1 * h1 / h2 : h3;
-          this.l3 = this.__enableVertical ? w1 - w3 : this.l3;
-          this.t3 = this.__enableHorizontal ? h1 - h3 : this.t3;
+          this.w3 = w3;
+          this.h3 = h1 * h1 / h2;
+          this.l3 = w1 - w3;
       },
       _withinBar: function _withinBar(x, y) {
           var w1 = this.w1;
@@ -277,13 +256,15 @@ var ScrollBar = (function () {
       this.t2 = 0; // scroller top offset
       this.t3 = 0; // bar top offset
 
+      this.v1 = 0; // wrapper movment
+      this.v2 = 0; // scroller movment
+      this.v3 = 0; // bar movment
+
+      this._v3 = 0; // snapshot v3
+
       this.l1 = 0; // wrapper lefe offset
       this.l2 = 0; // scroller left offset
       this.l3 = 0; // bar left offset
-
-      this._t1 = 0; // snapshot t1
-      this._t2 = 0; // snapshot t2
-      this._t3 = 0; // snapshot t2
 
       this.mx = 0; // mouse position x
       this.my = 0; // mouse posiiton y
@@ -291,13 +272,13 @@ var ScrollBar = (function () {
       this.__drag = false; // dragging bar?
       this.__callback = callback; // notify callback
 
+      this.__friction = 0.8; // animate friction
+      this.__step = 25; // step movment
+      this.__handler = null; // timer handler
+
       this.__wrapper = '.wrapper'; // wrapper querier
       this.__scroller = '.scroller'; // scroller querier
       this.__bar = '.bar'; // bar querier
-
-      this.__enableVertical = true; // enable vertical or horizontal scroll
-      this.__enableHorizontal = true; // enable horizontal scroll
-      this.__enableDebounce = false; // enable debounce animate
 
       // apply customize configuration
       Object.keys(opts).forEach(function (key) {
