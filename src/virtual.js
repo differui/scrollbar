@@ -7,7 +7,7 @@ export default {
         this.w2 = w2;
         this.h2 = h2;
         this.w3 = w3;
-        this.h3 = h1 * h1 / h2;
+        this.h3 = h2 > h1 ? h1 * h1 / h2 : h1;
         this.l3 = w1 - w3;
     },
 

@@ -68,10 +68,9 @@ var eventAPI = {
         this.doNotify();
     },
     doLoop: function doLoop() {
-        this.doNotify();
         this.doMove();
         caf(this._handler);
-        this._handler = raf(this.doLoop);
+        this._handler = raf(this.doLoop.bind(this));
     },
     doScrollTo: function doScrollTo(x, y) {
         var deltaT = y * -1 - this.t2;
@@ -138,10 +137,16 @@ var domAPI = {
 
         this._bindAll();
         this._installListener();
-        this._onResize();
+        this.doResize();
+        this.doLoop();
+    },
+    doResize: function doResize() {
+        var bounding = this.n1.getBoundingClientRect();
+
+        this.setDimension(bounding.top, bounding.left, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
     },
     _bindAll: function _bindAll() {
-        bindAll(this, 'doLoop', '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');
+        bindAll(this, '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');
     },
     _installListener: function _installListener() {
         window.addEventListener('resize', this._onResize);
@@ -166,10 +171,8 @@ var domAPI = {
         return y - this.y;
     },
     _onResize: function _onResize(ev) {
-        var bounding = this.n1.getBoundingClientRect();
-
-        this.setDimension(bounding.top, bounding.left, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
-        this.doLoop();
+        this.doResize();
+        this.doNotify();
     },
     _onMouseUp: function _onMouseUp(ev) {
         this.doMouseUp(ev.timeStamp);
@@ -202,7 +205,7 @@ var virtualAPI = {
         this.w2 = w2;
         this.h2 = h2;
         this.w3 = w3;
-        this.h3 = h1 * h1 / h2;
+        this.h3 = h2 > h1 ? h1 * h1 / h2 : h1;
         this.l3 = w1 - w3;
     },
     _withinBar: function _withinBar(x, y) {

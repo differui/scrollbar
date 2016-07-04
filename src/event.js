@@ -43,10 +43,9 @@ export default {
     },
 
     doLoop() {
-        this.doNotify();
         this.doMove();
         caf(this._handler);
-        this._handler = raf(this.doLoop);
+        this._handler = raf(this.doLoop.bind(this));
     },
 
     doScrollTo(x, y) {

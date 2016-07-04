@@ -8,12 +8,27 @@ export default {
 
         this._bindAll();
         this._installListener();
-        this._onResize();
+        this.doResize();
+        this.doLoop();
+    },
+
+    doResize() {
+        const bounding = this.n1.getBoundingClientRect();
+
+        this.setDimension(
+            bounding.top,
+            bounding.left,
+            this.n1.clientWidth,
+            this.n1.clientHeight,
+            this.n2.clientWidth,
+            this.n2.clientHeight,
+            this.n3.clientWidth,
+            this.n3.clientHeight
+        );
     },
 
     _bindAll() {
         bindAll(this,
-            'doLoop',
             '_onResize',
             '_onMouseUp',
             '_onMouseDown',
@@ -49,19 +64,8 @@ export default {
     },
 
     _onResize(ev) {
-        const bounding = this.n1.getBoundingClientRect();
-
-        this.setDimension(
-            bounding.top,
-            bounding.left,
-            this.n1.clientWidth,
-            this.n1.clientHeight,
-            this.n2.clientWidth,
-            this.n2.clientHeight,
-            this.n3.clientWidth,
-            this.n3.clientHeight
-        );
-        this.doLoop();
+        this.doResize();
+        this.doNotify();
     },
 
     _onMouseUp(ev) {
