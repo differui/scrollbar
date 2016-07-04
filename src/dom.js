@@ -65,7 +65,7 @@ export default {
 
     _onResize(ev) {
         this.doResize();
-        this.doNotify();
+        this.doNotify(true);
     },
 
     _onMouseUp(ev) {

@@ -38,6 +38,7 @@ var ScrollBar = (function () {
           this.t3 = t3;
       },
       doNotify: function doNotify() {
+          var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
           var w1 = this.w1;
           var h1 = this.h1;
           var l1 = this.l1;
@@ -55,7 +56,7 @@ var ScrollBar = (function () {
           var __t3 = this.__t3;
 
 
-          if (t1 !== __t1 || t2 !== __t2 || t3 !== __t3) {
+          if (force || t1 !== __t1 || t2 !== __t2 || t3 !== __t3) {
 
               this.__callback(w1, h1, l1, t1, w2, h2, l2, t2, w3, h3, l3, t3);
 
@@ -203,7 +204,7 @@ var ScrollBar = (function () {
       },
       _onResize: function _onResize(ev) {
           this.doResize();
-          this.doNotify();
+          this.doNotify(true);
       },
       _onMouseUp: function _onMouseUp(ev) {
           this.doMouseUp(ev.timeStamp);

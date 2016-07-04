@@ -13,14 +13,15 @@ export default {
         this.t3 = t3;
     },
 
-    doNotify() {
+    doNotify(force = false) {
         let {
             w1, h1, l1, t1, __t1,
             w2, h2, l2, t2, __t2,
             w3, h3, l3, t3, __t3
         } = this;
 
-        if (t1 !== __t1 ||
+        if (force ||
+            t1 !== __t1 ||
             t2 !== __t2 ||
             t3 !== __t3) {
 
