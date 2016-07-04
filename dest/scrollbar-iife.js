@@ -69,6 +69,7 @@ var ScrollBar = (function () {
           this.doNotify();
       },
       doLoop: function doLoop() {
+          this.doNotify();
           this.doMove();
           caf(this._handler);
           this._handler = raf(this.doLoop);

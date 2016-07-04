@@ -43,6 +43,7 @@ export default {
     },
 
     doLoop() {
+        this.doNotify();
         this.doMove();
         caf(this._handler);
         this._handler = raf(this.doLoop);
