@@ -28,8 +28,10 @@ export default {
     },
 
     doMove() {
+        let { h1, h2, v2 } = this;
+
         this.v2 *= this.__friction;
-        this.v3 = this.v2 * this.h1 / this.h2 * -1;
+        this.v3 = v2 !== 0 ? v2 * h1 / h2 * -1 : 0;
 
         if (Math.abs(this.v2) < 1 && Math.abs(this.v3) < 1) {
             return;

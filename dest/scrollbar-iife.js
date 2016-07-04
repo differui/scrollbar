@@ -55,8 +55,13 @@ var ScrollBar = (function () {
           this.__callback(w1, h1, l1, t1, w2, h2, l2, t2, w3, h3, l3, t3);
       },
       doMove: function doMove() {
+          var h1 = this.h1;
+          var h2 = this.h2;
+          var v2 = this.v2;
+
+
           this.v2 *= this.__friction;
-          this.v3 = this.v2 * this.h1 / this.h2 * -1;
+          this.v3 = v2 !== 0 ? v2 * h1 / h2 * -1 : 0;
 
           if (Math.abs(this.v2) < 1 && Math.abs(this.v3) < 1) {
               return;
@@ -144,7 +149,7 @@ var ScrollBar = (function () {
       doResize: function doResize() {
           var bounding = this.n1.getBoundingClientRect();
 
-          this.setDimension(bounding.top, bounding.left, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
+          this.setDimension(bounding.left, bounding.top, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
       },
       _bindAll: function _bindAll() {
           bindAll(this, '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');

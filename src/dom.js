@@ -16,8 +16,8 @@ export default {
         const bounding = this.n1.getBoundingClientRect();
 
         this.setDimension(
-            bounding.top,
             bounding.left,
+            bounding.top,
             this.n1.clientWidth,
             this.n1.clientHeight,
             this.n2.clientWidth,
