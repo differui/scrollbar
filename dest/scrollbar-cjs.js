@@ -93,7 +93,19 @@ var eventAPI = {
         var deltaT = y * -1 - this.t2;
         var direction = deltaT / Math.abs(deltaT);
 
-        this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
+        if (animate) {
+            this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
+        } else {
+            var h1 = this.h1;
+            var h2 = this.h2;
+
+
+            this.t2 = y * -1;
+            this.t3 = this.t2 * h1 / h2 * -1;
+
+            this.doRefine();
+            this.doNotify();
+        }
     },
     doScrollBy: function doScrollBy() {
         var x = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];

@@ -63,7 +63,17 @@ export default {
         const deltaT = y * -1 - this.t2;
         const direction = deltaT / Math.abs(deltaT)
 
-        this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
+        if (animate) {
+            this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
+        } else {
+            let { h1, h2 } = this;
+
+            this.t2 = y * -1;
+            this.t3 = this.t2 * h1 / h2 * -1;
+
+            this.doRefine();
+            this.doNotify();
+        }
     },
 
     doScrollBy(x = 0, y = 0, animate) {
