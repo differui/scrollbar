@@ -41,14 +41,13 @@ export default {
         let { h1, h2, v2 } = this;
 
         this.v2 *= this.__friction;
-        this.v3 = v2 !== 0 ? v2 * h1 / h2 * -1 : 0;
 
         if (Math.abs(this.v2) < 1 && Math.abs(this.v3) < 1) {
             return;
         }
 
         this.t2 += this.v2;
-        this.t3 += this.v3;
+        this.t3 = this.t2 * h1 / h2 * -1;;
 
         this.doRefine();
         this.doNotify();
@@ -62,7 +61,7 @@ export default {
 
     doScrollTo(x, y, animate = true) {
         const deltaT = y * -1 - this.t2;
-        const direction = deltaT / Math.abs(deltaT)
+        const direction = deltaT / Math.abs(deltaT) || 1;
 
         if (animate) {
             this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
@@ -116,8 +115,6 @@ export default {
     },
 
     doMouseWheel(delta, x, y, timeStamp) {
-        let { h2, h3 } = this;
-
         this.v2 += delta * this.__step;
     }
 };

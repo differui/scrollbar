@@ -71,14 +71,13 @@ var eventAPI = {
 
 
         this.v2 *= this.__friction;
-        this.v3 = v2 !== 0 ? v2 * h1 / h2 * -1 : 0;
 
         if (Math.abs(this.v2) < 1 && Math.abs(this.v3) < 1) {
             return;
         }
 
         this.t2 += this.v2;
-        this.t3 += this.v3;
+        this.t3 = this.t2 * h1 / h2 * -1;;
 
         this.doRefine();
         this.doNotify();
@@ -92,7 +91,7 @@ var eventAPI = {
         var animate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
         var deltaT = y * -1 - this.t2;
-        var direction = deltaT / Math.abs(deltaT);
+        var direction = deltaT / Math.abs(deltaT) || 1;
 
         if (animate) {
             this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
@@ -150,10 +149,6 @@ var eventAPI = {
         this.__drag = false;
     },
     doMouseWheel: function doMouseWheel(delta, x, y, timeStamp) {
-        var h2 = this.h2;
-        var h3 = this.h3;
-
-
         this.v2 += delta * this.__step;
     }
 };
@@ -168,13 +163,15 @@ var domAPI = {
 
         this._bindAll();
         this._installListener();
-        this.doResize();
+        this.doRefresh();
         this.doLoop();
     },
-    doResize: function doResize() {
+    doRefresh: function doRefresh() {
         var bounding = this.n1.getBoundingClientRect();
 
         this.setDimension(bounding.left, bounding.top, this.n1.clientWidth, this.n1.clientHeight, this.n2.clientWidth, this.n2.clientHeight, this.n3.clientWidth, this.n3.clientHeight);
+        this.doScrollBy(0, 0, false);
+        this.doNotify(true);
     },
     _bindAll: function _bindAll() {
         bindAll(this, '_onResize', '_onMouseUp', '_onMouseDown', '_onMouseMove', '_onMouseWheel');
@@ -202,8 +199,7 @@ var domAPI = {
         return y - this.y;
     },
     _onResize: function _onResize(ev) {
-        this.doResize();
-        this.doNotify(true);
+        this.doRefresh();
     },
     _onMouseUp: function _onMouseUp(ev) {
         this.doMouseUp(ev.timeStamp);

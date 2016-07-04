@@ -8,11 +8,11 @@ export default {
 
         this._bindAll();
         this._installListener();
-        this.doResize();
+        this.doRefresh();
         this.doLoop();
     },
 
-    doResize() {
+    doRefresh() {
         const bounding = this.n1.getBoundingClientRect();
 
         this.setDimension(
@@ -25,6 +25,8 @@ export default {
             this.n3.clientWidth,
             this.n3.clientHeight
         );
+        this.doScrollBy(0, 0, false);
+        this.doNotify(true);
     },
 
     _bindAll() {
@@ -64,8 +66,7 @@ export default {
     },
 
     _onResize(ev) {
-        this.doResize();
-        this.doNotify(true);
+        this.doRefresh();
     },
 
     _onMouseUp(ev) {

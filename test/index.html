@@ -38,15 +38,6 @@
         <div class="bar"></div>
         <div class="scroller">
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
         </div>
     </div>
     <div class="wrapper wrapper-scroll">
@@ -54,6 +45,10 @@
         <div class="scroller">
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.</p>
         </div>
+    </div>
+    <div>
+        <button id="refresh">Refresh</button>
+        <button id="add">Add</button>
     </div>
     <script src="../dest/scrollbar-iife.js"></script>
     <script>
@@ -66,8 +61,8 @@
             s1.left = l1 + 'px';
             s1.top = t1 + 'px';
 
-            s2.width = w2 + 'px';
-            s2.height = h2 + 'px';
+            // s2.width = w2 + 'px';
+            // s2.height = h2 + 'px';
             s2.left = l2 + 'px';
             s2.top = t2 + 'px';
 
@@ -83,6 +78,22 @@
         });
 
         bar.setNode();
+    </script>
+    <script>
+        var refreshBtn = document.querySelector('#refresh');
+        var addBtn = document.querySelector('#add');
+
+        refreshBtn.addEventListener('click', function () {
+            bar.doRefresh();
+        });
+        addBtn.addEventListener('click', function () {
+            var p = document.createElement('p');
+
+            p.textContent = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo voluptatem delectus recusandae quaerat deleniti harum laborum repellat, eveniet. Expedita minima doloremque necessitatibus vero placeat laudantium iure, ipsam iste eveniet ea nisi, voluptas aliquid dolorem! Consectetur inventore error dicta nam vero quaerat. Libero molestias quibusdam minima, atque perferendis placeat iure. Labore.'
+
+            document.querySelector('.scroller').appendChild(p);
+        });
+
     </script>
 </body>
 </html>
