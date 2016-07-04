@@ -42,17 +42,27 @@ var ScrollBar = (function () {
           var h1 = this.h1;
           var l1 = this.l1;
           var t1 = this.t1;
+          var __t1 = this.__t1;
           var w2 = this.w2;
           var h2 = this.h2;
           var l2 = this.l2;
           var t2 = this.t2;
+          var __t2 = this.__t2;
           var w3 = this.w3;
           var h3 = this.h3;
           var l3 = this.l3;
           var t3 = this.t3;
+          var __t3 = this.__t3;
 
 
-          this.__callback(w1, h1, l1, t1, w2, h2, l2, t2, w3, h3, l3, t3);
+          if (t1 !== __t1 || t2 !== __t2 || t3 !== __t3) {
+
+              this.__callback(w1, h1, l1, t1, w2, h2, l2, t2, w3, h3, l3, t3);
+
+              this.__t1 = t1;
+              this.__t2 = t2;
+              this.__t3 = t3;
+          }
       },
       doMove: function doMove() {
           var h1 = this.h1;
@@ -79,6 +89,8 @@ var ScrollBar = (function () {
           this._handler = raf(this.doLoop.bind(this));
       },
       doScrollTo: function doScrollTo(x, y) {
+          var animate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
           var deltaT = y * -1 - this.t2;
           var direction = deltaT / Math.abs(deltaT);
 
@@ -87,8 +99,9 @@ var ScrollBar = (function () {
       doScrollBy: function doScrollBy() {
           var x = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
           var y = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+          var animate = arguments[2];
 
-          this.doScrollTo(x, y + this.t2 * -1);
+          this.doScrollTo(x, y + this.t2 * -1, animate);
       },
       doMouseDown: function doMouseDown(x, y, timeStamp) {
           var withinBar = this._withinBar(x, y);
@@ -268,8 +281,6 @@ var ScrollBar = (function () {
       this.v1 = 0; // wrapper movment
       this.v2 = 0; // scroller movment
       this.v3 = 0; // bar movment
-
-      this._v3 = 0; // snapshot v3
 
       this.l1 = 0; // wrapper lefe offset
       this.l2 = 0; // scroller left offset

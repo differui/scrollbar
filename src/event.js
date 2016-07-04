@@ -15,16 +15,25 @@ export default {
 
     doNotify() {
         let {
-            w1, h1, l1, t1,
-            w2, h2, l2, t2,
-            w3, h3, l3, t3
+            w1, h1, l1, t1, __t1,
+            w2, h2, l2, t2, __t2,
+            w3, h3, l3, t3, __t3
         } = this;
 
-        this.__callback(
-            w1, h1, l1, t1,
-            w2, h2, l2, t2,
-            w3, h3, l3, t3
-        );
+        if (t1 !== __t1 ||
+            t2 !== __t2 ||
+            t3 !== __t3) {
+
+            this.__callback(
+                w1, h1, l1, t1,
+                w2, h2, l2, t2,
+                w3, h3, l3, t3
+            );
+
+            this.__t1 = t1;
+            this.__t2 = t2;
+            this.__t3 = t3;
+        }
     },
 
     doMove() {
@@ -50,15 +59,15 @@ export default {
         this._handler = raf(this.doLoop.bind(this));
     },
 
-    doScrollTo(x, y) {
+    doScrollTo(x, y, animate = true) {
         const deltaT = y * -1 - this.t2;
         const direction = deltaT / Math.abs(deltaT)
 
         this.v2 = deltaT * (1 - this.__friction) / this.__friction + direction;
     },
 
-    doScrollBy(x = 0, y = 0) {
-        this.doScrollTo(x, y + this.t2 * -1);
+    doScrollBy(x = 0, y = 0, animate) {
+        this.doScrollTo(x, y + this.t2 * -1, animate);
     },
 
     doMouseDown(x, y, timeStamp) {

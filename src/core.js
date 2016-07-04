@@ -26,8 +26,6 @@ function ScrollerBar(callback = null, opts = {}) {
     this.v2 = 0; // scroller movment
     this.v3 = 0; // bar movment
 
-    this._v3 = 0; // snapshot v3
-
     this.l1 = 0; // wrapper lefe offset
     this.l2 = 0; // scroller left offset
     this.l3 = 0; // bar left offset
