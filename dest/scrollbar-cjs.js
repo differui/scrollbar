@@ -219,6 +219,10 @@ var domAPI = {
 
         var delta = ev.detail ? ev.detail * -1 : ev.wheelDelta / 40;
 
+        if (delta === 0) {
+            return;
+        }
+
         this.doMouseWheel(delta / Math.abs(delta), this._antiBoundingX(ev.clientX), this._antiBoundingY(ev.clientY), ev.timeStamp);
     }
 };
